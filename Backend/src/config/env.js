@@ -3,8 +3,8 @@ require('dotenv').config();
 module.exports = {
   nodeEnv: process.env.NODE_ENV || 'development',
   port: process.env.PORT || 5000,
-  mongoUri: process.env.MONGO_URI || 'mongodb://localhost:27017/itc_workforce',
-  clientOrigin: process.env.CLIENT_ORIGIN || 'http://localhost:3000',
+  mongoUri: process.env.MONGO_URI || 'mongodb+srv://subhadipde918_db_user:user_subhadip_mong@dummydatabase.vrc8pks.mongodb.net/itc_workforce',
+  clientOrigin: process.env.CLIENT_ORIGIN || 'https://itcworkportal.onrender.com',
   jwtAccessSecret: process.env.JWT_ACCESS_SECRET || 'dev-access-secret',
   jwtRefreshSecret: process.env.JWT_REFRESH_SECRET || 'dev-refresh-secret',
   jwtAccessExpiresIn: process.env.JWT_ACCESS_EXPIRES_IN || '15m',
