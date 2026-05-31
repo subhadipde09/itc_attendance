@@ -1,0 +1,12 @@
+# Dependencies
+node_modules/
+
+# Lock file
+package-lock.json
+
+# Environment variables
+
+# Build files
+
+# Logs
+*.log

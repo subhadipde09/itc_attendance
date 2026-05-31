@@ -1,0 +1,728 @@
+# MASTER PROMPT – Smart Shift & Workforce Management System
+
+Act as a Senior Full-Stack Architect and build a complete production-ready Smart Shift & Workforce Management System for ITC.
+
+Generate FULL SOURCE CODE with separate backend and frontend folders. Do not provide partial implementations, pseudo code, or placeholders.
+
+---
+
+# Technology Stack
+
+## Frontend
+
+* React.js
+* React Router DOM
+* Material UI (MUI)
+* Axios
+* Redux Toolkit
+* React Hook Form
+* Yup Validation
+* Recharts
+* React Toastify
+
+## Backend
+
+* Node.js
+* Express.js
+* MongoDB
+* Mongoose
+* JWT Authentication
+* Refresh Tokens
+* bcryptjs
+* Speakeasy (TOTP)
+* QRCode
+* Helmet
+* Rate Limiter
+* CORS
+* dotenv
+
+## Database
+
+MongoDB
+
+---
+
+# Project Structure
+
+Create two completely separate folders:
+
+```text
+project-root/
+
+├── backend/
+│
+│   ├── src/
+│   │
+│   ├── config/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   ├── services/
+│   ├── utils/
+│   ├── validators/
+│   ├── seeds/
+│   ├── cron/
+│   ├── constants/
+│   │
+│   ├── app.js
+│   ├── server.js
+│   └── package.json
+│
+└── frontend/
+    │
+    ├── src/
+    │
+    ├── components/
+    ├── pages/
+    ├── layouts/
+    ├── routes/
+    ├── redux/
+    ├── services/
+    ├── hooks/
+    ├── context/
+    ├── utils/
+    ├── theme/
+    │
+    ├── App.js
+    └── package.json
+```
+
+Use clean architecture and best practices.
+
+---
+
+# User Roles
+
+Only two roles exist.
+
+## SUPER_ADMIN
+
+Capabilities:
+
+* Login using Email + Password
+* No TOTP required
+* Create Admins
+* Edit Admins
+* Disable Admins
+* Reset Admin Passwords
+* Manage Platform Settings
+* Full Access to System
+
+---
+
+## ADMIN
+
+Capabilities:
+
+* Login using Email + Password
+* Mandatory TOTP Verification
+* Manage Employees
+* Manage Attendance
+* Manage Roster
+* Manage Replacements
+* Manage Shift Swaps
+* View Analytics
+
+Restrictions:
+
+* Cannot create admins
+* Cannot manage platform settings
+* Cannot create super admins
+
+---
+
+# Authentication System
+
+Implement:
+
+* JWT Access Token
+* JWT Refresh Token
+* Role Based Access Control
+* Protected Routes
+* TOTP Authentication
+* Session Persistence
+
+---
+
+# Login Flow
+
+## SUPER ADMIN
+
+Email
+Password
+
+↓
+
+Login
+
+↓
+
+Dashboard
+
+No TOTP required.
+
+---
+
+## ADMIN
+
+Email
+Password
+
+↓
+
+Login
+
+↓
+
+TOTP Verification Page
+
+↓
+
+Enter 6 Digit OTP
+
+↓
+
+Verify
+
+↓
+
+Dashboard
+
+---
+
+# TOTP Setup
+
+When Super Admin creates Admin:
+
+System should:
+
+1. Generate TOTP Secret
+2. Generate QR Code
+3. Save Secret
+4. Display QR Code
+5. Admin scans using:
+
+* Google Authenticator
+* Microsoft Authenticator
+* Authy
+
+Store encrypted secret in MongoDB.
+
+---
+
+# Login Screen
+
+Requirements:
+
+* Professional Corporate Design
+* ITC Logo
+* Email Field
+* Password Field
+* Login Button
+* Responsive UI
+* Dark/Light Theme Support
+* Form Validation
+
+---
+
+# Dashboard
+
+Display Live IST Time.
+
+Auto refresh every second.
+
+Show Current Shift:
+
+Morning:
+06:00 AM – 02:00 PM
+
+Evening:
+02:00 PM – 10:00 PM
+
+Night:
+10:00 PM – 06:00 AM
+
+Dashboard Cards:
+
+* Total Employees
+* Present Employees
+* Absent Employees
+* Shift-wise Manpower
+* Understaffed Shifts
+* Replacement Assignments Today
+
+Important:
+
+Dashboard updates ONLY after attendance is saved.
+
+---
+
+# Employee Management
+
+Employee Schema
+
+```js
+{
+ employeeId: String,
+ name: String,
+ team: String,
+ shift: String,
+ attendanceStatus: String,
+ weeklyOffDay: String,
+ active: Boolean
+}
+```
+
+Features:
+
+* Add Employee
+* Edit Employee
+* Delete Employee
+* Search Employee
+* Filter Team
+* Filter Shift
+* Pagination
+* Sorting
+
+Employee Table:
+
+* Employee ID
+* Name
+* Team
+* Shift
+* Attendance Status
+
+---
+
+# Attendance Module
+
+Attendance Options:
+
+Present
+Absent
+
+Only one button:
+
+Save Attendance
+
+Workflow:
+
+1. Mark attendance
+2. Save Attendance
+3. Store in MongoDB
+4. Update Dashboard
+5. Update Analytics
+6. Trigger Replacement Engine
+
+Data must persist after refresh.
+
+---
+
+# Automatic Roster Engine
+
+Generate automatic 4-week roster.
+
+Rotation:
+
+Week 1
+
+Team A → Morning
+Team B → Evening
+Team C → Night
+
+Week 2
+
+Team A → Evening
+Team B → Night
+Team C → Morning
+
+Week 3
+
+Team A → Night
+Team B → Morning
+Team C → Evening
+
+Week 4
+
+Repeat
+
+Rules:
+
+* Weekly Off Mandatory
+* Even Distribution
+* Auto Assignment
+
+Features:
+
+* Generate Roster
+* View Roster
+* Regenerate
+* Export PDF
+* Export Excel
+
+Store in MongoDB.
+
+---
+
+# Smart Replacement Engine
+
+When employee marked absent:
+
+Automatically suggest replacement.
+
+Conditions:
+
+Replacement must:
+
+* Be Present
+* Not on Weekly Off
+* Not Already Assigned
+* Not Working Another Shift
+* Not Violate Compliance Rules
+
+Show:
+
+Absent Employee
+
+Suggested Replacement
+
+Button:
+
+Assign Replacement
+
+On click:
+
+* Update Manpower
+* Update Dashboard
+* Save Replacement
+* Update Analytics
+
+---
+
+# Shift Swap Module
+
+HR/Admin can swap shifts.
+
+Validation:
+
+* Same Day
+* No Duplicate Shift
+* No Overlap
+* No Multi Shift Assignment
+
+Store Swap History.
+
+---
+
+# Workforce Compliance Rules
+
+Enforce:
+
+1. No employee works more than one shift daily.
+
+2. No employee works continuously more than 16 hours.
+
+3. Weekly Off Mandatory.
+
+4. Replacement follows rules.
+
+5. Shift Swap follows rules.
+
+Return meaningful validation errors.
+
+---
+
+# Analytics Module
+
+Build interactive charts.
+
+Metrics:
+
+* Present Employees
+* Absent Employees
+* Shift-wise Manpower
+* Understaffed Shifts
+* Attendance Trends
+* Replacement Trends
+* Team Performance
+
+Charts:
+
+* Pie Chart
+* Bar Chart
+* Line Chart
+
+Filters:
+
+* Daily
+* Weekly
+* Monthly
+
+---
+
+# MongoDB Collections
+
+Users
+
+```js
+{
+ email:String,
+ password:String,
+ role:String,
+ firstName:String,
+ lastName:String,
+ isActive:Boolean,
+ totpSecret:String,
+ createdBy:ObjectId,
+ lastLogin:Date
+}
+```
+
+Employees
+
+Attendance
+
+Roster
+
+Replacements
+
+ShiftSwaps
+
+RefreshTokens
+
+AuditLogs
+
+Create all schemas properly.
+
+---
+
+# Admin Management
+
+Visible ONLY to Super Admin.
+
+Menu:
+
+Admin Management
+
+Features:
+
+* Create Admin
+* Edit Admin
+* Disable Admin
+* Reset Password
+* View Admin Details
+
+Table:
+
+* Name
+* Email
+* Status
+* Last Login
+* Created Date
+
+---
+
+# APIs
+
+Authentication
+
+```text
+POST /api/auth/login
+POST /api/auth/verify-totp
+POST /api/auth/refresh-token
+POST /api/auth/logout
+```
+
+Admin Management
+
+```text
+POST /api/admins
+GET /api/admins
+PUT /api/admins/:id
+PATCH /api/admins/:id/status
+PATCH /api/admins/:id/reset-password
+```
+
+Employees
+
+```text
+GET /api/employees
+POST /api/employees
+PUT /api/employees/:id
+DELETE /api/employees/:id
+```
+
+Attendance
+
+```text
+POST /api/attendance/save
+GET /api/attendance
+```
+
+Roster
+
+```text
+POST /api/roster/generate
+GET /api/roster
+```
+
+Replacements
+
+```text
+GET /api/replacements/suggestions
+POST /api/replacements/assign
+```
+
+Swaps
+
+```text
+POST /api/swaps/create
+GET /api/swaps/history
+```
+
+Analytics
+
+```text
+GET /api/analytics/dashboard
+```
+
+---
+
+# MongoDB Seed Script
+
+Create:
+
+```bash
+npm run seed
+```
+
+The seed script must:
+
+1. Create Super Admin
+
+Email:
+[superadmin@itc.com](mailto:superadmin@itc.com)
+
+Password:
+SuperAdmin@123
+
+Role:
+SUPER_ADMIN
+
+2. Create Admin 1
+
+Email:
+[admin1@itc.com](mailto:admin1@itc.com)
+
+Password:
+Admin@123
+
+Role:
+ADMIN
+
+3. Create Admin 2
+
+Email:
+[admin2@itc.com](mailto:admin2@itc.com)
+
+Password:
+Admin@123
+
+Role:
+ADMIN
+
+4. Create 30 Employees
+
+EMP001 – EMP030
+
+Teams:
+
+* Team A
+* Team B
+* Team C
+
+Distributed equally.
+
+5. Create attendance history for last 30 days.
+
+6. Generate roster data.
+
+7. Generate sample replacements.
+
+8. Generate sample shift swaps.
+
+Seed script must be idempotent and avoid duplicate records.
+
+---
+
+# Security Requirements
+
+Implement:
+
+* bcrypt Password Hashing
+* JWT
+* Refresh Tokens
+* Helmet
+* Rate Limiter
+* Input Sanitization
+* CORS
+* Environment Variables
+* TOTP Secret Encryption
+* RBAC Middleware
+* Audit Logging
+
+---
+
+# UI Requirements
+
+Material UI Professional Design.
+
+Theme:
+
+* Corporate Blue
+* White Background
+* Modern HR Dashboard
+
+Sidebar:
+
+* Dashboard
+* Employees
+* Attendance
+* Roster
+* Replacements
+* Shift Swaps
+* Analytics
+* Admin Management (Super Admin Only)
+* Logout
+
+Responsive:
+
+* Desktop
+* Tablet
+* Mobile
+
+---
+
+# Additional Requirements
+
+Generate:
+
+* Complete Backend Code
+* Complete Frontend Code
+* Complete MongoDB Models
+* Complete Controllers
+* Complete Routes
+* Complete Services
+* Complete Middleware
+* Redux Store
+* Axios Service Layer
+* Environment Configuration
+* MongoDB Connection
+* Dockerfile
+* docker-compose.yml
+* README.md
+* Seed Script
+* Installation Guide
+
+Use production-ready coding standards, proper folder structure, reusable components, error handling, logging, and scalable architecture.
